@@ -1,0 +1,49 @@
+# Node.js / Capacitor
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.env
+.env.*
+!.env.example
+
+# Frontend
+dist/
+coverage/
+
+# Android / Gradle
+.gradle/
+**/build/
+android/local.properties
+android/.cxx/
+android/.externalNativeBuild/
+android/captures/
+*.iml
+
+# iOS / Xcode
+ios/App/Pods/
+**/DerivedData/
+**/xcuserdata/
+*.xcuserstate
+
+# Signing / Release
+*.jks
+*.keystore
+*.p12
+*.p8
+*.mobileprovision
+*.apk
+*.aab
+*.ipa
+key.properties
+keystore.properties
+
+# IDE / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+*.log
