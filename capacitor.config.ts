@@ -6,6 +6,8 @@ const config: CapacitorConfig = {
   webDir: 'www',
   server: {
     url: 'https://linolife.co/capp'
+    //url: 'https://linolife.co/papp'
+    //url: 'https://linolife.co/aapp'
   }
 };
 
