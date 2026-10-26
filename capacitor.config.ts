@@ -6,8 +6,22 @@ const config: CapacitorConfig = {
   webDir: 'www',
   server: {
     url: 'https://linolife.co/capp'
-    //url: 'https://linolife.co/papp'
-    //url: 'https://linolife.co/aapp'
+  },
+  android: {
+    // The hosted capp uses browser maps. Native Maps eagerly initializes its
+    // renderer on the Activity's main thread, delaying the first app frame.
+    includePlugins: [
+      '@capacitor/barcode-scanner',
+      '@capacitor/camera',
+      '@capacitor/geolocation',
+      '@capacitor/push-notifications',
+      '@capacitor/screen-orientation'
+    ]
+  },
+  plugins: {
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'banner', 'list']
+    }
   }
 };
 

@@ -11,9 +11,11 @@ pnpm-debug.log*
 # Frontend
 dist/
 coverage/
+.runtime-tests/
 
 # Android / Gradle
 .gradle/
+**/.kotlin/
 **/build/
 android/local.properties
 android/.cxx/
