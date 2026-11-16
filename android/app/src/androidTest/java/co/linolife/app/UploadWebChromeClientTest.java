@@ -49,11 +49,49 @@ public class UploadWebChromeClientTest {
         assertEquals("photo.jpg", params.getFilenameHint());
     }
 
-    private FileChooserParams params(String[] types, boolean multiple) {
+    @Test
+    public void ordinaryPhotoUploadOffersCameraAndGallery() {
+        var upload = params(new String[] { "image/jpeg", "image/png", "image/webp" }, false, false);
+        assertTrue(upload.offersPhotoCapture());
+
+        var camera = upload.withSource(UploadWebChromeClient.Source.CAMERA);
+        assertTrue(camera.isCaptureEnabled());
+        assertArrayEquals(new String[] { "image/*" }, camera.getAcceptTypes());
+        assertArrayEquals(upload.getAcceptTypes(), camera.createIntent().getStringArrayExtra(Intent.EXTRA_MIME_TYPES));
+
+        var files = upload.withSource(UploadWebChromeClient.Source.FILES);
+        assertFalse(files.isCaptureEnabled());
+        assertArrayEquals(upload.getAcceptTypes(), files.getAcceptTypes());
+    }
+
+    @Test
+    public void galleryKeepsDocumentTypesAndMultipleSelection() {
+        var upload = params(new String[] { ".jpg", "application/pdf" }, true);
+        assertTrue(upload.offersPhotoCapture());
+
+        var files = upload.withSource(UploadWebChromeClient.Source.FILES);
+        assertFalse(files.isCaptureEnabled());
+        assertArrayEquals(new String[] { "image/jpeg", "application/pdf" }, files.getAcceptTypes());
+        assertTrue(files.createIntent().getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false));
+    }
+
+    @Test
+    public void photoCaptureRequiresAnInputThatAcceptsJpeg() {
+        assertTrue(params(new String[] { "image/*" }, false, false).offersPhotoCapture());
+        assertFalse(params(new String[] { "application/pdf" }, false, false).offersPhotoCapture());
+        assertFalse(params(new String[] { "image/png" }, false, false).offersPhotoCapture());
+        assertFalse(params(new String[] { "image/*", "video/*" }, false).offersPhotoCapture());
+    }
+
+    private UploadWebChromeClient.UploadParams params(String[] types, boolean multiple) {
+        return params(types, multiple, true);
+    }
+
+    private UploadWebChromeClient.UploadParams params(String[] types, boolean multiple, boolean capture) {
         return new UploadWebChromeClient.UploadParams(new FileChooserParams() {
             @Override public int getMode() { return multiple ? MODE_OPEN_MULTIPLE : MODE_OPEN; }
             @Override public String[] getAcceptTypes() { return types; }
-            @Override public boolean isCaptureEnabled() { return true; }
+            @Override public boolean isCaptureEnabled() { return capture; }
             @Override public CharSequence getTitle() { return "Upload"; }
             @Override public String getFilenameHint() { return "photo.jpg"; }
             @Override public Intent createIntent() { return new Intent(Intent.ACTION_GET_CONTENT).setType("image/jpeg"); }

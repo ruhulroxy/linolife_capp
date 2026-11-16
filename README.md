@@ -92,7 +92,7 @@ effect. Syncing web assets alone does not update an APK or an iOS installation.
 
 ## Firebase push notifications
 
-Both native apps use Firebase project `linolife` and app ID `co.linolife.app`:
+Both native apps use Firebase project `linolife-8901b` and app ID `co.linolife.app`:
 
 - Android config: `android/app/google-services.json`. The Google Services Gradle
   plugin is required, so a missing or mismatched config fails the build.
@@ -126,7 +126,7 @@ Before verifying iPhone delivery on a Mac:
    not already configured. The supplied plist does not include this key. Keep the
    APNs private key in Firebase; it does not belong in the app bundle.
 3. Ensure the hosted backend has FCM enabled and valid server credentials for
-   project `linolife`. Client JSON/plist files do not configure server sending.
+   project `linolife-8901b`. Client JSON/plist files do not configure server sending.
 4. Install the new app, sign in, tap Enable notifications, allow permission and
    send a test from the notification inbox. Verify foreground, background and
    closed-app delivery and tap navigation. Repeat on Android 13+ and iOS.

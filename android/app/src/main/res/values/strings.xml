@@ -4,4 +4,7 @@
     <string name="title_activity_main">Lino Life</string>
     <string name="package_name">co.linolife.app</string>
     <string name="custom_url_scheme">co.linolife.app</string>
+    <string name="upload_photo_source">Add a photo</string>
+    <string name="upload_take_photo">Take photo</string>
+    <string name="upload_choose_from_gallery">Choose from gallery or files</string>
 </resources>

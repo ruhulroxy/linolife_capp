@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "12743955465",
-    "project_id": "linolife",
-    "storage_bucket": "linolife.firebasestorage.app"
+    "project_number": "534069003867",
+    "project_id": "linolife-8901b",
+    "storage_bucket": "linolife-8901b.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:12743955465:android:fd8af1a9f17c280e5d14d8",
+        "mobilesdk_app_id": "1:534069003867:android:8e81601f141761bc8e217e",
         "android_client_info": {
           "package_name": "co.linolife.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDRQYpXcIevFO3rNXCFOSmnLNKUc0DNp3A"
+          "current_key": "AIzaSyAJPiNBSnOBj1EVO9XURY5GH43rMD7df2k"
         }
       ],
       "services": {
