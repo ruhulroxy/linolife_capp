@@ -92,7 +92,7 @@ effect. Syncing web assets alone does not update an APK or an iOS installation.
 
 ## Firebase push notifications
 
-Both native apps use Firebase project `linolife-8901b` and app ID `co.linolife.app`:
+Both Android and iOS use Firebase project `linolife-8901b` with app ID `co.linolife.app`.
 
 - Android config: `android/app/google-services.json`. The Google Services Gradle
   plugin is required, so a missing or mismatched config fails the build.
@@ -107,14 +107,14 @@ Both native apps use Firebase project `linolife-8901b` and app ID `co.linolife.a
 - Debug uses the development APNs entitlement; Release uses production. No silent
   background notification handler is implemented.
 
-The hosted website currently expects `median.firebaseMessaging`. The bundled
-`www/native-push.js` adapts that API to Capacitor and is injected at document start
-on both platforms. It runs only in the main frame at `https://linolife.co`. The
-existing website continues to request permission after the user taps Enable,
-save the native token to `/push/devices` with session/CSRF protection, handle
-notification taps, and unlink the account before token deletion on logout.
-The adapter does not request permission or register a device on its own.
-Token refreshes are fetched again when the website registers on load/resume.
+The bundled native push adapter is injected at document start on Android and
+iOS for the main frame on https://linolife.co. It exposes LinoLifeNativePush
+with the platform and app portal, and keeps the Median callback contract for
+older deployed pages. The updated Laravel client saves tokens after opt-in,
+refreshes the same inbox in response to notifications, and opens owned
+notification links inside the current app portal.
+
+See [native FCM setup and testing](docs/native-fcm.md) for all three applications.
 
 Before verifying iPhone delivery on a Mac:
 

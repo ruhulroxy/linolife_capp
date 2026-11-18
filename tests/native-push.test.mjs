@@ -6,7 +6,7 @@ import test from 'node:test';
 const source = readFileSync(new URL('../www/native-push.js', import.meta.url), 'utf8');
 const flush = () => new Promise(resolve => setImmediate(resolve));
 function boot(options = {}) {
-    const listeners = new Map(), timers = new Map(), calls = [];
+    const listeners = new Map(), timers = new Map(), handlers = new Map(), calls = [], urls = [];
     let timerID = 0, receive = options.receive || 'granted', token = 'fcm-device-token';
     const push = {
         addListener: async (name, callback) => { listeners.set(name, callback); return { remove() {} }; },
@@ -33,12 +33,13 @@ function boot(options = {}) {
     window.top = options.iframe ? {} : window;
     if (options.existing) window.median = { firebaseMessaging: options.existing };
     runInNewContext(source, {
-        window, location: { origin: options.origin || 'https://linolife.co' }, console,
+        window, location: { origin: options.origin || 'https://linolife.co', assign: url => urls.push(url) }, console,
+        document: { readyState: 'loading', addEventListener: (event, handler) => handlers.set(event, handler) },
         setTimeout: callback => { timers.set(++timerID, callback); return timerID; },
         clearTimeout: id => timers.delete(id)
     });
     return {
-        api: window.median?.firebaseMessaging, calls, timers, listeners,
+        api: window.median?.firebaseMessaging, native: window.LinoLifeNativePush, calls, timers, listeners, handlers, urls,
         setPermission: value => { receive = value; }, setToken: value => { token = value; }
     };
 }
@@ -159,6 +160,32 @@ test('foreground notifications use the shape expected by the hosted website', as
     await flush();
     app.listeners.get('pushNotificationReceived')({ title: 'Booking confirmed' });
     assert.equal(received[0].notification.title, 'Booking confirmed');
+});
+
+test('signed-out cold taps use only the app surface and trusted notification UUID', () => {
+    const app = boot();
+    const id = '58e0adae-99b9-4678-9555-24302fb77722';
+    const surface = app.native.surface;
+    const emit = data => app.listeners.get('pushNotificationActionPerformed')({ actionId: 'tap', notification: { data } });
+    emit({ notification_id: id, surface: surface === 'aapp' ? 'capp' : 'aapp' });
+    assert.equal(app.handlers.has('DOMContentLoaded'), false);
+    emit({ notification_id: id, surface, url: 'https://other.example/redirect' });
+    app.handlers.get('DOMContentLoaded')();
+    emit({ notification_id: id, surface });
+    app.handlers.get('DOMContentLoaded')();
+    assert.deepEqual(app.urls, [`/notifications/open/${surface}/${id}`]);
+});
+
+test('provider token refresh is forwarded after registration and ignored after logout', async () => {
+    const app = boot();
+    const tokens = [];
+    app.native.notificationTokenChanged.addListener(({ token }) => tokens.push(token));
+    app.listeners.get('registration')({ value: 'retained-old-token' });
+    await app.native.register();
+    app.listeners.get('registration')({ value: 'new-token' });
+    await app.native.deleteToken();
+    app.listeners.get('registration')({ value: 'late-token' });
+    assert.deepEqual(tokens, ['new-token']);
 });
 
 test('disabling notifications cancels a pending registration', async () => {

@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import UserNotifications
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -7,9 +8,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
 
-        window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = CAPBridgeViewController()
-        window?.makeKeyAndVisible()
+        let appWindow = window ?? UIWindow(windowScene: windowScene)
+        let controller = (appWindow.rootViewController as? LinoLifeViewController) ?? LinoLifeViewController()
+        appWindow.rootViewController = controller
+        window = appWindow
+        appWindow.makeKeyAndVisible()
+        if let response = connectionOptions.notificationResponse {
+            controller.loadViewIfNeeded()
+            controller.bridge?.notificationRouter.userNotificationCenter(
+                UNUserNotificationCenter.current(), didReceive: response, withCompletionHandler: {}
+            )
+        }
 
         SceneDelegateProxy.shared.scene(scene, willConnectTo: session, options: connectionOptions)
     }
