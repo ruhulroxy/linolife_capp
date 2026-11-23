@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Lino Life',
   webDir: 'www',
   server: {
+    errorPath: 'offline.html',
     url: 'https://linolife.co/capp'
   },
   android: {

@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lino Life · Connection</title></head>
+<body><main><h1>Unable to connect</h1><p>Your sign-in is kept on this device. Check your connection, then try again.</p><button type="button" id="retry">Try again</button></main>
+<script>
+document.getElementById('retry').addEventListener('click', () => window.Capacitor?.Plugins?.LinoLifeStartup?.retry());
+window.Capacitor?.Plugins?.LinoLifeStartup?.unavailable();
+</script></body></html>
